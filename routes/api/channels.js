@@ -4,7 +4,7 @@ let Channel = require('../../models/channelModel');
 
 /* GET all channels. */
 router.get('/', async function(req, res, next) {
-    let channel = await Channel.find();
+    let channel = await Channel.find().populate('users');
 
     return res.send(channel);
 
@@ -14,7 +14,7 @@ router.get('/', async function(req, res, next) {
 /* GET singel channels. */
 router.get('/:channelid', async function(req, res, next) {
 
-    let channel = await Channel.findById(req.params.channelid);
+    let channel = await Channel.findById(req.params.channelid).populate('users');
 
     return res.send(channel);
 
@@ -27,6 +27,8 @@ router.post('/', async (req, res)=> {
 
         channel.name = req.body.name;
         channel.description = req.body.description;
+        channel.users = [];
+        channel.users.push(req.body.users);
     
         await channel.save();
         return res.send('channel created successfully');
@@ -36,6 +38,47 @@ router.post('/', async (req, res)=> {
 
     }
    
+
+});
+
+
+
+
+
+/* add user to channel. */
+router.put('/adduser/:channelid', async (req, res)=> {
+    
+     let channel = await Channel.findById(req.params.channelid);
+
+        channel.users.push(req.body.users);
+    
+        await channel.save();
+        return res.send(channel);
+   
+
+});
+
+
+
+/* GET members of the channel. */
+router.get('/getmembers/:channelid', async function(req, res, next) {
+
+    let channel = await Channel.findById(req.params.channelid).populate('users','username');
+
+    console.log(channel.users);
+
+    return res.send(channel.users);
+
+});
+
+
+
+/* GET messages of the channel. */
+router.get('/getmessages/:channelid', async function(req, res, next) {
+
+    let channel = await Channel.findById(req.params.channelid).populate('messages','text');
+
+    return res.send(channel.messages);
 
 });
 

@@ -45,7 +45,7 @@ app.use(function(err, req, res, next) {
 
 
 
-mongoose.connect('mongodb+srv://chatapp:chatapp@cluster0.odofh.mongodb.net/test', {useNewUrlParser: true})
+mongoose.connect('mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false', {useNewUrlParser: true})
 .then(e => {
   console.log("database connected successfully")
 })
